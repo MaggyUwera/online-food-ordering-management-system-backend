@@ -1,5 +1,8 @@
 package com.auca.foodordering.entity;
 
-public interface MealOrderStatus {
-
-}
+public enum MealOrderStatus {   
+     PLACED,    
+     ON_THE_WAY,    
+     DELIVERED,    
+     CANCELLED
+    }

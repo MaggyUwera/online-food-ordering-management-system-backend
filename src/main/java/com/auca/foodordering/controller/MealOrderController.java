@@ -1,11 +1,13 @@
 package com.auca.foodordering.controller;
 
 import com.auca.foodordering.entity.MealOrder;
+import com.auca.foodordering.entity.MealOrderStatus;
 import com.auca.foodordering.service.MealOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,20 +15,42 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/meal-orders")
 public class MealOrderController {
+
     private final MealOrderService mealOrderService;
 
     public MealOrderController(MealOrderService mealOrderService) {
         this.mealOrderService = mealOrderService;
     }
 
+    // A2 + D1
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody MealOrder mealOrder) {
-        return new ResponseEntity<>(mealOrderService.save(mealOrder), HttpStatus.CREATED);
+        String message = mealOrderService.save(mealOrder);
+        if (message.equals("Meal order date cannot be in the past")) {
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        } else if (message.equals("Courier already has a delivery on that date")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<MealOrder>> all() {
         return new ResponseEntity<>(mealOrderService.findAll(), HttpStatus.OK);
+    }
+
+    // B2 - GET /api/meal-orders/by-status?status=PLACED
+    @GetMapping("/by-status")
+    public ResponseEntity<List<MealOrder>> getMealOrdersByStatus(@RequestParam MealOrderStatus status) {
+        return new ResponseEntity<>(mealOrderService.getMealOrdersByStatus(status), HttpStatus.OK);
+    }
+
+    // B3 - GET /api/meal-orders/between?start=2026-10-01&end=2026-10-31
+    @GetMapping("/between")
+    public ResponseEntity<List<MealOrder>> getMealOrdersBetween(@RequestParam String start, @RequestParam String end) {
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);
+        return new ResponseEntity<>(mealOrderService.getMealOrdersBetween(startDate, endDate), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -38,13 +62,26 @@ public class MealOrderController {
         return new ResponseEntity<>(m.get(), HttpStatus.OK);
     }
 
+    // A2 - general update (does not change the status)
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable UUID id, @RequestBody MealOrder mealOrder) {
-        Optional<MealOrder> updated = mealOrderService.update(id, mealOrder);
-        if (updated.isEmpty()) {
-            return new ResponseEntity<>("The meal order with that id does not exist", HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody MealOrder mealOrder) {
+        String message = mealOrderService.update(id, mealOrder);
+        if (message.equals("The meal order with that id does not exist")) {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(updated.get(), HttpStatus.OK);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    // D2 - PATCH /api/meal-orders/{id}/status?status=ON_THE_WAY
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateStatus(@PathVariable UUID id, @RequestParam MealOrderStatus status) {
+        String message = mealOrderService.updateStatus(id, status);
+        if (message.equals("The meal order with that id does not exist")) {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else if (message.startsWith("Cannot change status from")) {
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

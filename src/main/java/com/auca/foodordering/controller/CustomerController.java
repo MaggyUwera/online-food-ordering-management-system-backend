@@ -46,7 +46,11 @@ public class CustomerController {
         }
         return new ResponseEntity<>(updated.get(), HttpStatus.OK);
     }
-
+    // B1
+    @GetMapping("/by-last-name")
+    public ResponseEntity<List<Customer>> getCustomersByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(customerService.getCustomersByLastName(lastName), HttpStatus.OK);
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = customerService.delete(id);

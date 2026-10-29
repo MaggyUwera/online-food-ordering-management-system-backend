@@ -37,7 +37,11 @@ public class CourierService {
              courier.setDeliveryZones(updatedCourier.getDeliveryZones());        
              courierRepository.save(courier);        
              return "Courier updated successfully";   
-             }    
+             } 
+                 // C1 - couriers who hold a delivery zone (name matched ignoring case)
+    public List<Courier> getCouriersByDeliveryZone(String name) {
+        return courierRepository.findCouriersByDeliveryZoneName(name);
+    }   
              public String deleteCourier(UUID id) {      
                   if (!courierRepository.existsById(id)) {           
                      return "The courier with that id does not exist";       

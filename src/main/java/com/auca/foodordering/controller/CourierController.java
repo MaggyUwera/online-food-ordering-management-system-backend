@@ -50,6 +50,11 @@ public class CourierController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+        // C1 - GET /api/couriers/by-delivery-zone?name=remera
+    @GetMapping("/by-delivery-zone")
+    public ResponseEntity<List<Courier>> getCouriersByDeliveryZone(@RequestParam String name) {
+        return new ResponseEntity<>(courierService.getCouriersByDeliveryZone(name), HttpStatus.OK);
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCourier(@PathVariable UUID id) {

@@ -1,6 +1,7 @@
 package com.auca.foodordering.controller;
 
 import com.auca.foodordering.entity.Customer;
+import com.auca.foodordering.service.CourierService;   
 import com.auca.foodordering.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
-    private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) {
+    private final CustomerService customerService;
+    private final CourierService courierService;   // NEW
+
+    public CustomerController(CustomerService customerService, CourierService courierService) {   // NEW
         this.customerService = customerService;
+        this.courierService = courierService;   // NEW
     }
 
     @PostMapping("/save")
@@ -46,11 +50,7 @@ public class CustomerController {
         }
         return new ResponseEntity<>(updated.get(), HttpStatus.OK);
     }
-    // B1
-    @GetMapping("/by-last-name")
-    public ResponseEntity<List<Customer>> getCustomersByLastName(@RequestParam String lastName) {
-        return new ResponseEntity<>(customerService.getCustomersByLastName(lastName), HttpStatus.OK);
-    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = customerService.delete(id);
@@ -58,5 +58,20 @@ public class CustomerController {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    // B1 - GET /api/customers/by-last-name?lastName=uwera
+    @GetMapping("/by-last-name")
+    public ResponseEntity<List<Customer>> getCustomersByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(customerService.getCustomersByLastName(lastName), HttpStatus.OK);
+    }
+
+    // C4 - GET /api/customers/of-courier/{courierId}   // NEW
+    @GetMapping("/of-courier/{courierId}")
+    public ResponseEntity<?> getCustomersOfCourier(@PathVariable UUID courierId) {
+        if (courierService.getCourierById(courierId).isEmpty()) {
+            return new ResponseEntity<>("The courier with that id does not exist", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(customerService.getCustomersOfCourier(courierId), HttpStatus.OK);
     }
 }

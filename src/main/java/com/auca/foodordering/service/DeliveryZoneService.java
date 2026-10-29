@@ -33,7 +33,11 @@ public class DeliveryZoneService {
 
         existing.get().setName(deliveryZone.getName());       
         return Optional.of(deliveryZoneRepository.save(existing.get()));   
-     }    
+     }  
+         // C3 - delivery zones that no courier holds
+    public List<DeliveryZone> getUnusedDeliveryZones() {
+        return deliveryZoneRepository.findUnusedDeliveryZones();
+    }  
     public String delete(UUID id) {        
         Optional<DeliveryZone> existing = deliveryZoneRepository.findById(id);       
         if (existing.isEmpty()) return "The delivery zone with that id does not exist";   

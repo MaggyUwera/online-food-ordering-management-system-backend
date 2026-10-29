@@ -20,7 +20,12 @@ public class DeliveryZoneController {
     public DeliveryZoneController(DeliveryZoneService deliveryZoneService) {        
         this.deliveryZoneService = deliveryZoneService;   
     
-    }    
+    } 
+        // C3 - GET /api/delivery-zones/unused
+    @GetMapping("/unused")
+    public ResponseEntity<List<DeliveryZone>> getUnusedDeliveryZones() {
+        return new ResponseEntity<>(deliveryZoneService.getUnusedDeliveryZones(), HttpStatus.OK);
+    }   
     @PostMapping("/save")    
     public ResponseEntity<String> save(@RequestBody DeliveryZone deliveryZone) {       
         return new ResponseEntity<>(deliveryZoneService.save(deliveryZone), HttpStatus.CREATED);    

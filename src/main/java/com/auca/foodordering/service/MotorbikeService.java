@@ -36,6 +36,10 @@ public Optional<Motorbike> update(UUID id, Motorbike motorbike) {
     return Optional.of(motorbikeRepository.save(existing.get()));   
 }   
 
+    // C2 - motorbikes that no courier occupies
+    public List<Motorbike> getFreeMotorbikes() {
+        return motorbikeRepository.findFreeMotorbikes();
+    }
 public String delete(UUID id) {       
     Optional<Motorbike> existing = motorbikeRepository.findById(id);       
     if (existing.isEmpty()) return "The motorbike with that id does not exist";      

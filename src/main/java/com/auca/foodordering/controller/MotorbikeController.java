@@ -47,7 +47,11 @@ public class MotorbikeController {
         }
         return new ResponseEntity<>(updated.get(), HttpStatus.OK);
     }
-
+    // C2 - GET /api/motorbikes/free
+    @GetMapping("/free")
+    public ResponseEntity<List<Motorbike>> getFreeMotorbikes() {
+        return new ResponseEntity<>(motorbikeService.getFreeMotorbikes(), HttpStatus.OK);
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = motorbikeService.delete(id);

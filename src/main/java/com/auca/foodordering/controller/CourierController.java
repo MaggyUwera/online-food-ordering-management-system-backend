@@ -19,7 +19,20 @@ public class CourierController {
     public CourierController(CourierService courierService) {
         this.courierService = courierService;
     }
-
+    // D3 - PUT /api/couriers/{courierId}/delivery-zones/{deliveryZoneId}
+    @PutMapping("/{courierId}/delivery-zones/{deliveryZoneId}")
+    public ResponseEntity<String> addDeliveryZone(@PathVariable UUID courierId,
+                                                  @PathVariable UUID deliveryZoneId) {
+        String message = courierService.addDeliveryZone(courierId, deliveryZoneId);
+        if (message.equals("The courier with that id does not exist")
+                || message.equals("That delivery zone does not exist")) {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else if (message.equals("The courier already has that delivery zone")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+    
     @PostMapping("/save")
     public ResponseEntity<String> saveCourier(@RequestBody Courier courier) {
         String message = courierService.saveCourier(courier);

@@ -3,6 +3,7 @@ package com.auca.foodordering.service;
 import com.auca.foodordering.entity.MealOrder;
 import com.auca.foodordering.entity.MealOrderStatus;
 import com.auca.foodordering.repository.MealOrderRepository;
+import com.auca.foodordering.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,9 +15,11 @@ import java.util.UUID;
 public class MealOrderService {
 
     private final MealOrderRepository mealOrderRepository;
+    private final ReviewRepository reviewRepository;
 
-    public MealOrderService(MealOrderRepository mealOrderRepository) {
+    public MealOrderService(MealOrderRepository mealOrderRepository, ReviewRepository reviewRepository) {
         this.mealOrderRepository = mealOrderRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     // A2 + D1 - safe saving
@@ -28,15 +31,17 @@ public class MealOrderService {
                 mealOrder.getCourier(), mealOrder.getOrderDate(), MealOrderStatus.CANCELLED)) {
             return "Courier already has a delivery on that date";
         }
-        mealOrder.setStatus(MealOrderStatus.PLACED); // a new order always starts as PLACED
+        mealOrder.setStatus(MealOrderStatus.PLACED); // a new meal order always starts as PLACED
         mealOrderRepository.save(mealOrder);
         return "Meal order saved successfully";
     }
 
+    // A2
     public List<MealOrder> findAll() {
         return mealOrderRepository.findAll();
     }
 
+    // A2
     public Optional<MealOrder> findById(UUID id) {
         return mealOrderRepository.findById(id);
     }
@@ -57,9 +62,14 @@ public class MealOrderService {
         return "Meal order updated successfully";
     }
 
+    // A2 + E3 - delete, but not when the meal order has reviews
     public String delete(UUID id) {
         Optional<MealOrder> existing = mealOrderRepository.findById(id);
         if (existing.isEmpty()) return "The meal order with that id does not exist";
+
+        if (reviewRepository.existsByMealOrder(existing.get())) {
+            return "That meal order has reviews, delete them first";
+        }
 
         mealOrderRepository.deleteById(id);
         return "Meal order deleted successfully";

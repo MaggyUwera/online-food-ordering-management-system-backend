@@ -22,7 +22,7 @@ public class MealOrderController {
         this.mealOrderService = mealOrderService;
     }
 
-    // A2 + D1
+    // A2 + D1 - POST /api/meal-orders/save
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody MealOrder mealOrder) {
         String message = mealOrderService.save(mealOrder);
@@ -34,6 +34,7 @@ public class MealOrderController {
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
+    // A2 - GET /api/meal-orders/all
     @GetMapping("/all")
     public ResponseEntity<List<MealOrder>> all() {
         return new ResponseEntity<>(mealOrderService.findAll(), HttpStatus.OK);
@@ -53,6 +54,7 @@ public class MealOrderController {
         return new ResponseEntity<>(mealOrderService.getMealOrdersBetween(startDate, endDate), HttpStatus.OK);
     }
 
+    // A2 - GET /api/meal-orders/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable UUID id) {
         Optional<MealOrder> m = mealOrderService.findById(id);
@@ -62,7 +64,7 @@ public class MealOrderController {
         return new ResponseEntity<>(m.get(), HttpStatus.OK);
     }
 
-    // A2 - general update (does not change the status)
+    // A2 - PUT /api/meal-orders/update/{id} (does not change the status)
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody MealOrder mealOrder) {
         String message = mealOrderService.update(id, mealOrder);
@@ -84,11 +86,14 @@ public class MealOrderController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    // A2 + E3 - DELETE /api/meal-orders/delete/{id}
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         String message = mealOrderService.delete(id);
         if (message.equals("The meal order with that id does not exist")) {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else if (message.equals("That meal order has reviews, delete them first")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(message, HttpStatus.OK);
     }

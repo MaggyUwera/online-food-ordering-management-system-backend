@@ -2,8 +2,10 @@ package com.auca.foodordering.service;
 
 import com.auca.foodordering.entity.Courier;
 import com.auca.foodordering.entity.DeliveryZone;
+import com.auca.foodordering.entity.Motorbike;
 import com.auca.foodordering.repository.CourierRepository;
 import com.auca.foodordering.repository.DeliveryZoneRepository;
+import com.auca.foodordering.repository.MotorbikeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +17,14 @@ public class CourierService {
 
     private final CourierRepository courierRepository;
     private final DeliveryZoneRepository deliveryZoneRepository;
+    private final MotorbikeRepository motorbikeRepository;
 
     public CourierService(CourierRepository courierRepository,
-                          DeliveryZoneRepository deliveryZoneRepository) {
+                          DeliveryZoneRepository deliveryZoneRepository,
+                          MotorbikeRepository motorbikeRepository) {
         this.courierRepository = courierRepository;
         this.deliveryZoneRepository = deliveryZoneRepository;
+        this.motorbikeRepository = motorbikeRepository;
     }
 
     public String saveCourier(Courier courier) {
@@ -82,8 +87,35 @@ public class CourierService {
             return "The courier already has that delivery zone";
         }
 
-        courier.getDeliveryZones().add(deliveryZone); // keep the old zones, add the new one
-        courierRepository.save(courier);              // save the owner (Courier has the @JoinTable)
+        courier.getDeliveryZones().add(deliveryZone);
+        courierRepository.save(courier);
         return "Delivery zone added to the courier";
+    }
+
+    // D4 - give the courier another motorbike; the old one becomes free
+    public String changeMotorbike(UUID courierId, int bikeNumber) {
+        Optional<Courier> courierOptional = courierRepository.findById(courierId);
+        if (courierOptional.isEmpty()) {
+            return "The courier with that id does not exist";
+        }
+
+        Optional<Motorbike> motorbikeOptional = motorbikeRepository.findByBikeNumber(bikeNumber);
+        if (motorbikeOptional.isEmpty()) {
+            return "The motorbike with that bikeNumber does not exist";
+        }
+
+        Courier courier = courierOptional.get();
+        Motorbike motorbike = motorbikeOptional.get();
+
+        boolean alreadyHisOwn = courier.getMotorbike() != null
+                && courier.getMotorbike().getId().equals(motorbike.getId());
+
+        if (courierRepository.existsByMotorbike(motorbike) && !alreadyHisOwn) {
+            return "That motorbike is taken by another courier";
+        }
+
+        courier.setMotorbike(motorbike);
+        courierRepository.save(courier);
+        return "Motorbike changed successfully";
     }
 }

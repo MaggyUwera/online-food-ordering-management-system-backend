@@ -68,6 +68,19 @@ public class CourierController {
     public ResponseEntity<List<Courier>> getCouriersByDeliveryZone(@RequestParam String name) {
         return new ResponseEntity<>(courierService.getCouriersByDeliveryZone(name), HttpStatus.OK);
     }
+        // D4 - PATCH /api/couriers/{courierId}/motorbike?bikeNumber=4
+    @PatchMapping("/{courierId}/motorbike")
+    public ResponseEntity<String> changeMotorbike(@PathVariable UUID courierId,
+                                                  @RequestParam int bikeNumber) {
+        String message = courierService.changeMotorbike(courierId, bikeNumber);
+        if (message.equals("The courier with that id does not exist")
+                || message.equals("The motorbike with that bikeNumber does not exist")) {
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else if (message.equals("That motorbike is taken by another courier")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCourier(@PathVariable UUID id) {

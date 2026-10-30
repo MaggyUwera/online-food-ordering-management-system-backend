@@ -1,0 +1,456 @@
+{
+  "info": {
+    "_postman_id": "bb29cdf2-7bcf-429c-a668-834c3b12e26a",
+    "name": "online-food-ordering-management-system-midterm",
+    "description": "Online Food Ordering Management System - Uwera Maggy (27519). One request per requirement, named by its ID, plus error cases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "A1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/couriers/all",
+        "description": "200: couriers with their motorbike and delivery zones (relationships, no JSON loop)."
+      }
+    },
+    {
+      "name": "A2",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "http://localhost:8080/api/customers/save",
+        "description": "201: Customer saved successfully",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Aline\",\n  \"lastName\": \"Ishimwe\",\n  \"phone\": \"0786789012\",\n  \"deliveryAddress\": \"Gisozi, KG 5 Ave\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "B1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/customers/by-last-name?lastName=uwera",
+        "description": "200: Gemma Uwera, Maggy Uwera (ignore case, sorted by firstName)"
+      }
+    },
+    {
+      "name": "B2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/by-status?status=PLACED",
+        "description": "200: PLACED meal orders, earliest orderDate first"
+      }
+    },
+    {
+      "name": "B3",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/between?start=2026-10-01&end=2026-10-31",
+        "description": "200: October meal orders, both dates inclusive"
+      }
+    },
+    {
+      "name": "C1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/couriers/by-delivery-zone?name=remera",
+        "description": "200: couriers holding Remera (letter case ignored)"
+      }
+    },
+    {
+      "name": "C2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/motorbikes/free",
+        "description": "200: motorbike 4"
+      }
+    },
+    {
+      "name": "C3",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/delivery-zones/unused",
+        "description": "200: Nyamirambo"
+      }
+    },
+    {
+      "name": "C4",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/customers/of-courier/73c7e8e5-234e-4ed6-a948-287dd818861f",
+        "description": "200: each customer once"
+      }
+    },
+    {
+      "name": "D1",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/save",
+        "description": "201: Meal order saved successfully, saved as PLACED. Use a new future date each time.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderDate\": \"2026-12-10\",\n  \"status\": \"DELIVERED\",\n  \"items\": \"Rolex, Juice\",\n  \"totalAmount\": 3500,\n  \"customer\": {\n    \"id\": \"4d523f11-4f16-4f46-a1dd-7601c1e66be8\"\n  },\n  \"courier\": {\n    \"id\": \"4d5b7410-32af-4d53-b5ed-d629d0db0b3f\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "D2",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/700637d8-6e75-4ef2-b31f-970c04cfd618/status?status=ON_THE_WAY",
+        "description": "200: Meal order status updated successfully (PLACED order)"
+      }
+    },
+    {
+      "name": "D3",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": "http://localhost:8080/api/couriers/a5b45c4d-1fa0-479d-97cb-cfd94cceb975/delivery-zones/f4f4bf5c-89ea-4519-ab5e-abc57e97029a",
+        "description": "200: Delivery zone added to the courier. Sent again: 409 The courier already has that delivery zone"
+      }
+    },
+    {
+      "name": "D4",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": "http://localhost:8080/api/couriers/4d5b7410-32af-4d53-b5ed-d629d0db0b3f/motorbike?bikeNumber=4",
+        "description": "200: Motorbike changed successfully"
+      }
+    },
+    {
+      "name": "E1",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "http://localhost:8080/api/reviews/save?mealOrderId=0e0873c2-1961-4d38-9052-e008fda4c07c",
+        "description": "201: Review saved successfully",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dishName\": \"Isombe\",\n  \"comment\": \"Delicious and well packed\",\n  \"stars\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "E2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/reviews/customer/0781234567",
+        "description": "200: reviews of the customer, newest reviewDate first"
+      }
+    },
+    {
+      "name": "E3",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/delete/5bf01120-ba5b-4bfe-a9c9-965a475a4987",
+        "description": "409: That meal order has reviews, delete them first"
+      }
+    },
+    {
+      "name": "F1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/stats/by-status",
+        "description": "200: [[status, count], ...]"
+      }
+    },
+    {
+      "name": "F2",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/cancel-day?courierId=73c7e8e5-234e-4ed6-a948-287dd818861f&date=2026-10-20",
+        "description": "200: N meal orders cancelled (DELIVERED ones are kept)"
+      }
+    },
+    {
+      "name": "Bonus - dashboard",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/dashboard/summary",
+        "description": "200: customers, couriers, freeMotorbikes, ordersToday, placed, reviews"
+      }
+    },
+    {
+      "name": "Bonus - page",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8080/api/meal-orders/page?page=0&size=5&sort=orderDate,desc",
+        "description": "200: Page with content, totalElements, totalPages"
+      }
+    },
+    {
+      "name": "Error cases and extras",
+      "item": [
+        {
+          "name": "A2 - get all meal orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/all",
+            "description": "200: all meal orders"
+          }
+        },
+        {
+          "name": "A2 - get meal order by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/5bf01120-ba5b-4bfe-a9c9-965a475a4987",
+            "description": "200: one meal order"
+          }
+        },
+        {
+          "name": "A2 - error unknown id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/00000000-0000-0000-0000-000000000000",
+            "description": "404: The meal order with that id does not exist"
+          }
+        },
+        {
+          "name": "A2 - error delete unknown customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/customers/delete/00000000-0000-0000-0000-000000000000",
+            "description": "404: The customer with that id does not exist"
+          }
+        },
+        {
+          "name": "B1 - empty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/customers/by-last-name?lastName=nobody",
+            "description": "200: []"
+          }
+        },
+        {
+          "name": "C1 - empty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/couriers/by-delivery-zone?name=nyamirambo",
+            "description": "200: []"
+          }
+        },
+        {
+          "name": "C4 - error",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/customers/of-courier/00000000-0000-0000-0000-000000000000",
+            "description": "404: The courier with that id does not exist"
+          }
+        },
+        {
+          "name": "D1 - error past date",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/save",
+            "description": "400: Meal order date cannot be in the past",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderDate\": \"2026-10-01\",\n  \"status\": \"DELIVERED\",\n  \"items\": \"Rolex, Juice\",\n  \"totalAmount\": 3500,\n  \"customer\": {\n    \"id\": \"4d523f11-4f16-4f46-a1dd-7601c1e66be8\"\n  },\n  \"courier\": {\n    \"id\": \"4d5b7410-32af-4d53-b5ed-d629d0db0b3f\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D1 - error courier busy",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/save",
+            "description": "409 after D1 was sent once: Courier already has a delivery on that date",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderDate\": \"2026-12-10\",\n  \"status\": \"DELIVERED\",\n  \"items\": \"Rolex, Juice\",\n  \"totalAmount\": 3500,\n  \"customer\": {\n    \"id\": \"4d523f11-4f16-4f46-a1dd-7601c1e66be8\"\n  },\n  \"courier\": {\n    \"id\": \"4d5b7410-32af-4d53-b5ed-d629d0db0b3f\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D2 - error",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/5bf01120-ba5b-4bfe-a9c9-965a475a4987/status?status=PLACED",
+            "description": "400: Cannot change status from DELIVERED to PLACED"
+          }
+        },
+        {
+          "name": "D2 - error not found",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/00000000-0000-0000-0000-000000000000/status?status=DELIVERED",
+            "description": "404: The meal order with that id does not exist"
+          }
+        },
+        {
+          "name": "D3 - error not found",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "http://localhost:8080/api/couriers/00000000-0000-0000-0000-000000000000/delivery-zones/f4f4bf5c-89ea-4519-ab5e-abc57e97029a",
+            "description": "404: The courier with that id does not exist"
+          }
+        },
+        {
+          "name": "D4 - error taken",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/couriers/a5b45c4d-1fa0-479d-97cb-cfd94cceb975/motorbike?bikeNumber=1",
+            "description": "409: That motorbike is taken by another courier"
+          }
+        },
+        {
+          "name": "D4 - error not found",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/couriers/4d5b7410-32af-4d53-b5ed-d629d0db0b3f/motorbike?bikeNumber=99",
+            "description": "404: The motorbike with that bikeNumber does not exist"
+          }
+        },
+        {
+          "name": "D4 - restore",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/couriers/4d5b7410-32af-4d53-b5ed-d629d0db0b3f/motorbike?bikeNumber=3",
+            "description": "200: moves the courier back to motorbike 3"
+          }
+        },
+        {
+          "name": "E1 - error not delivered",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/save?mealOrderId=e7cc74c1-41e9-4996-9b62-17aacb10ece0",
+            "description": "400: Reviews are only for DELIVERED meal orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dishName\": \"Isombe\",\n  \"comment\": \"Delicious and well packed\",\n  \"stars\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "E1 - error not found",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/save?mealOrderId=00000000-0000-0000-0000-000000000000",
+            "description": "404: The meal order with that id does not exist",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dishName\": \"Isombe\",\n  \"comment\": \"Delicious and well packed\",\n  \"stars\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "E2 - empty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/customer/0784567890",
+            "description": "200: []"
+          }
+        },
+        {
+          "name": "E3 - delete review",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/delete/PASTE-A-REVIEW-ID",
+            "description": "200: Review deleted successfully (copy an id from GET /api/reviews/all)"
+          }
+        },
+        {
+          "name": "E3 - error review not found",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/delete/00000000-0000-0000-0000-000000000000",
+            "description": "404: The review with that id does not exist"
+          }
+        },
+        {
+          "name": "E - all reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/reviews/all",
+            "description": "200: all reviews (to copy a review id)"
+          }
+        },
+        {
+          "name": "F2 - nothing to cancel",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "http://localhost:8080/api/meal-orders/cancel-day?courierId=73c7e8e5-234e-4ed6-a948-287dd818861f&date=2027-01-15",
+            "description": "200: 0 meal orders cancelled"
+          }
+        }
+      ]
+    }
+  ]
+}

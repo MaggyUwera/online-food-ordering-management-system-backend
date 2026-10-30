@@ -1,8 +1,9 @@
 # Online Food Ordering Management System – Backend
 
-**Student:** Uwera Maggy
-**Student ID:** 27519
-**Project:** Online Food Ordering Management System
+- **Student:** Uwera Maggy
+- **Student ID:** 27519
+- **Project:** Online Food Ordering Management System
+
 
 A Spring Boot REST API that lets customers order meals for home delivery. A customer places a meal order that is delivered by a courier; each courier rides one motorbike and covers several delivery zones such as Remera or Kicukiro. An order moves from PLACED to ON_THE_WAY and ends DELIVERED or CANCELLED. Once an order is delivered, reviews of the meal can be recorded.
 
@@ -25,7 +26,7 @@ Java 25, Spring Boot 4.1.1 (Spring Web MVC, Spring Data JPA, Validation), Hibern
    ```
    On Mac/Linux: `export DB_PASSWORD=your_postgres_password` and then `./mvnw spring-boot:run`.
 4. The API runs on `http://localhost:8080`. The tables are created automatically (`spring.jpa.hibernate.ddl-auto=update`).
-5. Import `online-food-ordering-management-system-midterm.postman_collection.json` into Postman. Enter the seed data with the save requests in this order: delivery zones, motorbikes, couriers, customers, meal orders, reviews.
+5. Import `online-food-ordering-management-system-midterm.postman_collection.json` into Postman. The requests use the ids from my local database. On a new database, first enter the seed data through the save endpoints in this order: delivery zones, motorbikes, couriers, customers, meal orders, reviews. Then replace the ids in the requests with the new ones.
 
 ## Domain model
 

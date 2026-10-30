@@ -12,7 +12,7 @@ public class DeliveryZone {
 
       @Id   
       @GeneratedValue(strategy = GenerationType.UUID)   
-      private UUID id;  
+      private UUID id; 
 
       private String name;  
 

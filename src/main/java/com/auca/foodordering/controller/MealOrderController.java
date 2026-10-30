@@ -3,6 +3,10 @@ package com.auca.foodordering.controller;
 import com.auca.foodordering.entity.MealOrder;
 import com.auca.foodordering.entity.MealOrderStatus;
 import com.auca.foodordering.service.MealOrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +58,23 @@ public class MealOrderController {
         return new ResponseEntity<>(mealOrderService.getMealOrdersBetween(startDate, endDate), HttpStatus.OK);
     }
 
+    // F1 - GET /api/meal-orders/stats/by-status
+    @GetMapping("/stats/by-status")
+    public ResponseEntity<List<Object[]>> getMealOrderStatsByStatus() {
+        return new ResponseEntity<>(mealOrderService.getMealOrderStatsByStatus(), HttpStatus.OK);
+    }
+
+    // BONUS - GET /api/meal-orders/page?page=0&size=5&sort=orderDate,desc
+    @GetMapping("/page")
+    public ResponseEntity<Page<MealOrder>> getMealOrdersPage(@RequestParam int page,
+                                                             @RequestParam int size,
+                                                             @RequestParam String sort) {
+        String[] sortParts = sort.split(",");                 // "orderDate,desc" -> ["orderDate", "desc"]
+        Sort.Direction direction = Sort.Direction.fromString(sortParts[1]);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortParts[0]));
+        return new ResponseEntity<>(mealOrderService.getMealOrdersPage(pageable), HttpStatus.OK);
+    }
+
     // A2 - GET /api/meal-orders/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable UUID id) {
@@ -84,6 +105,13 @@ public class MealOrderController {
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    // F2 - PATCH /api/meal-orders/cancel-day?courierId=...&date=2026-10-20
+    @PatchMapping("/cancel-day")
+    public ResponseEntity<String> cancelDay(@RequestParam UUID courierId, @RequestParam String date) {
+        LocalDate day = LocalDate.parse(date);
+        return new ResponseEntity<>(mealOrderService.cancelDay(courierId, day), HttpStatus.OK);
     }
 
     // A2 + E3 - DELETE /api/meal-orders/delete/{id}

@@ -4,7 +4,10 @@ import com.auca.foodordering.entity.MealOrder;
 import com.auca.foodordering.entity.MealOrderStatus;
 import com.auca.foodordering.repository.MealOrderRepository;
 import com.auca.foodordering.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -106,5 +109,22 @@ public class MealOrderService {
         mealOrder.setStatus(newStatus);
         mealOrderRepository.save(mealOrder);
         return "Meal order status updated successfully";
+    }
+
+    // F1 - meal orders per status: [["PLACED",4],["DELIVERED",3]]
+    public List<Object[]> getMealOrderStatsByStatus() {
+        return mealOrderRepository.countMealOrdersByStatus();
+    }
+
+    // F2 - courier is absent: cancel the day with one UPDATE query
+    @Transactional
+    public String cancelDay(UUID courierId, LocalDate date) {
+        int count = mealOrderRepository.cancelDay(courierId, date);
+        return count + " meal orders cancelled";
+    }
+
+    // BONUS - meal orders page by page
+    public Page<MealOrder> getMealOrdersPage(Pageable pageable) {
+        return mealOrderRepository.findAll(pageable);
     }
 }
